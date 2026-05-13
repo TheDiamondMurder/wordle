@@ -1,0 +1,29 @@
+{
+  "fallbackWord": "CHAOS",
+  "wordles": [
+    {
+      "date": "2026-05-13",
+      "word": "BRAIN"
+    },
+    {
+      "date": "2026-05-14",
+      "word": "TOOLS"
+    },
+    {
+      "date": "2026-05-15",
+      "word": "XYLEM"
+    },
+    {
+      "date": "2026-05-16",
+      "word": "ROBOT"
+    },
+    {
+      "date": "2026-05-17",
+      "word": "EXAMS"
+    },
+    {
+      "date": "2026-05-18",
+      "word": "ARROW"
+    }
+  ]
+}
