@@ -2,10 +2,6 @@
   "fallbackWord": "CHAOS",
   "wordles": [
     {
-      "date": "2026-05-13",
-      "word": "BRAIN"
-    },
-    {
       "date": "2026-05-14",
       "word": "TOOLS"
     },
@@ -24,6 +20,10 @@
     {
       "date": "2026-05-18",
       "word": "ARROW"
+    },
+    {
+      "date": "2026-05-19",
+      "word": "BIRDS"
     }
   ]
 }
