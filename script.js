@@ -423,9 +423,6 @@ let animatingRow = -1;
 let visibleStates = new Map();
 let countdownTimer = null;
 let reloadedForNextPuzzle = false;
-let validWords = new Set(fallbackValidWords);
-let invalidWords = new Set();
-let isCheckingWord = false;
 
 function todayKey() {
   const now = new Date();
@@ -448,9 +445,6 @@ function normalizeWord(word) {
 }
 
 async function loadValidWords() {
-  validWords = new Set(fallbackValidWords);
-  invalidWords = new Set();
-
   try {
     const response = await fetch("data/valid-words.json?v=1");
     if (!response.ok) throw new Error("No word list");
@@ -461,52 +455,25 @@ async function loadValidWords() {
       words
         .map(normalizeWord)
         .filter(Boolean)
-        .forEach((word) => validWords.add(word));
+        .forEach((word) => fallbackValidWords.push(word));
     }
   } catch {
-    // The built-in list keeps the game usable if the static word file is missing.
-  }
-
-  try {
-    const cache = JSON.parse(localStorage.getItem("jakublabs-wordle:dictionary-cache") || "{}");
-    Object.entries(cache).forEach(([word, valid]) => {
-      if (valid) validWords.add(word);
-      else invalidWords.add(word);
-    });
-  } catch {
-    // Ignore broken cache data.
+    // Custom words are optional.
   }
 }
 
-function cacheDictionaryResult(word, valid) {
-  try {
-    const cache = JSON.parse(localStorage.getItem("jakublabs-wordle:dictionary-cache") || "{}");
-    cache[word] = valid;
-    localStorage.setItem("jakublabs-wordle:dictionary-cache", JSON.stringify(cache));
-  } catch {
-    // If localStorage is full or blocked, validation still works for this session.
-  }
-}
+function looksLikePossibleWord(word) {
+  if (word === answer || fallbackValidWords.includes(word)) return true;
+  if (!/^[A-Z]+$/.test(word)) return false;
+  if (/^(.)\1+$/.test(word)) return false;
 
-async function isValidGuess(word) {
-  if (validWords.has(word) || word === answer) return true;
-  if (invalidWords.has(word)) return false;
+  const vowels = word.match(/[AEIOUY]/g)?.length || 0;
+  if (vowels === 0 || vowels === word.length) return false;
+  if (/[AEIOUY]{4,}/.test(word)) return false;
+  if (/[^AEIOUY]{4,}/.test(word)) return false;
 
-  try {
-    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`);
-    if (response.ok) {
-      validWords.add(word);
-      cacheDictionaryResult(word, true);
-      return true;
-    }
-  } catch {
-    showToast("Could not check word");
-    return false;
-  }
-
-  invalidWords.add(word);
-  cacheDictionaryResult(word, false);
-  return false;
+  const rareJunk = /(Q[^U])|([BCDFGHJKLMNPQRSTVWXZ]{3,}$)|(^[HXZ]{2,})|([JQXZ]{3,})/;
+  return !rareJunk.test(word);
 }
 
 function selectPuzzle(data) {
@@ -610,7 +577,6 @@ async function loadPuzzle() {
   answer = puzzle.word;
   wordLength = answer.length;
   await loadValidWords();
-  validWords.add(answer);
   // The word hash is part of the key, so changing today's word gives everyone a fresh board.
   storageKey = `jakublabs-wordle:${puzzle.date}:${puzzle.wordHash || compactHash(answer)}`;
   loadState();
@@ -824,12 +790,8 @@ async function submitGuess() {
   }
 
   const guess = currentGuess;
-  isCheckingWord = true;
-  const validGuess = await isValidGuess(guess);
-  isCheckingWord = false;
-
-  if (!validGuess) {
-    showToast("Not in word list");
+  if (!looksLikePossibleWord(guess)) {
+    showToast("Looks like gibberish");
     shakeActiveRow();
     return;
   }
@@ -853,7 +815,7 @@ async function submitGuess() {
 }
 
 function handleKey(key) {
-  if (isAnimating || isCheckingWord) return;
+  if (isAnimating) return;
   if (gameOver) {
     showResultModal();
     return;
