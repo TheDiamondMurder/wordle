@@ -1,14 +1,6 @@
 {
-  "fallbackWord": "CHAOS",
+  "fallbackWord": "PENIS",
   "wordles": [
-    {
-      "date": "2026-05-15",
-      "word": "NOTTS"
-    },
-    {
-      "date": "2026-05-16",
-      "word": "ROBOT"
-    },
     {
       "date": "2026-05-17",
       "word": "EXAMS"
@@ -44,6 +36,30 @@
     {
       "date": "2026-05-25",
       "word": "FINAL"
+    },
+    {
+      "date": "2026-05-26",
+      "word": "BRAKE"
+    },
+    {
+      "date": "2026-05-27",
+      "word": "CHEAP"
+    },
+    {
+      "date": "2026-05-28",
+      "word": "TEEPS"
+    },
+    {
+      "date": "2026-05-29",
+      "word": "KICKS"
+    },
+    {
+      "date": "2026-05-30",
+      "word": "LIMBS"
+    },
+    {
+      "date": "2026-05-31",
+      "word": "RATED"
     }
   ]
 }
