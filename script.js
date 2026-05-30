@@ -2,6 +2,8 @@ const board = document.querySelector("#board");
 const keyboard = document.querySelector("#keyboard");
 const puzzleDate = document.querySelector("#puzzle-date");
 const statusLabel = document.querySelector("#status-label");
+const statsBar = document.querySelector("#stats-bar");
+const streakBox = document.querySelector("#streak-box");
 const toast = document.querySelector("#toast");
 const resultModal = document.querySelector("#result-modal");
 const modalTitle = document.querySelector("#modal-title");
@@ -423,6 +425,7 @@ let animatingRow = -1;
 let visibleStates = new Map();
 let countdownTimer = null;
 let reloadedForNextPuzzle = false;
+const statsStorageKey = "jakublabs-wordle:stats:v1";
 
 function todayKey() {
   const now = new Date();
@@ -430,6 +433,17 @@ function todayKey() {
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function previousDateKey(dateKey) {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  date.setDate(date.getDate() - 1);
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
 }
 
 function compactHash(text) {
@@ -444,40 +458,9 @@ function normalizeWord(word) {
   return String(word || "").trim().toUpperCase().replace(/[^A-Z]/g, "");
 }
 
-async function loadValidWords() {
-  try {
-    const response = await fetch("data/valid-words.json?v=1");
-    if (!response.ok) throw new Error("No word list");
-    const data = await response.json();
-    const words = Array.isArray(data) ? data : data.words;
-
-    if (Array.isArray(words)) {
-      words
-        .map(normalizeWord)
-        .filter(Boolean)
-        .forEach((word) => fallbackValidWords.push(word));
-    }
-  } catch {
-    // Custom words are optional.
-  }
-}
-
-function looksLikePossibleWord(word) {
-  if (word === answer || fallbackValidWords.includes(word)) return true;
-  if (!/^[A-Z]+$/.test(word)) return false;
-  if (/^(.)\1+$/.test(word)) return false;
-
-  const vowels = word.match(/[AEIOUY]/g)?.length || 0;
-  if (vowels === 0 || vowels === word.length) return false;
-  if (/[AEIOUY]{4,}/.test(word)) return false;
-  if (/[^AEIOUY]{4,}/.test(word)) return false;
-
-  const rareJunk = /(Q[^U])|([BCDFGHJKLMNPQRSTVWXZ]{3,}$)|(^[HXZ]{2,})|([JQXZ]{3,})/;
-  return !rareJunk.test(word);
-}
-
 function selectPuzzle(data) {
   const today = todayKey();
+  const yesterday = previousDateKey(today);
   const scheduled = [...(data.wordles || [])]
     .map((entry) => ({
       date: entry.date,
@@ -487,6 +470,7 @@ function selectPuzzle(data) {
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const active = scheduled.filter((entry) => entry.date <= today).at(-1);
+  const yesterdayEntry = scheduled.filter((entry) => entry.date <= yesterday).at(-1);
   const fallbackWord = normalizeWord(data.fallbackWord) || "CHAOS";
   const chosen = active || { date: today, word: fallbackWord };
 
@@ -498,6 +482,7 @@ function selectPuzzle(data) {
     wordHash: compactHash(chosen.word),
     id: `${chosen.date}-${compactHash(chosen.word)}`,
     nextDate: next?.date || getTomorrowKey(),
+    yesterdayWord: yesterdayEntry?.word || "-----",
   };
 }
 
@@ -576,10 +561,10 @@ async function loadPuzzle() {
 
   answer = puzzle.word;
   wordLength = answer.length;
-  await loadValidWords();
   // The word hash is part of the key, so changing today's word gives everyone a fresh board.
   storageKey = `jakublabs-wordle:${puzzle.date}:${puzzle.wordHash || compactHash(answer)}`;
   loadState();
+  if (gameOver) recordCompletedGame();
   render();
   startCountdown();
   if (gameOver) setTimeout(showResultModal, 350);
@@ -613,6 +598,92 @@ function saveState() {
     gameOver,
     completedAt: gameOver ? new Date().toISOString() : null,
   }));
+}
+
+function loadStats() {
+  try {
+    const stats = JSON.parse(localStorage.getItem(statsStorageKey) || "null");
+    if (stats && typeof stats === "object" && stats.completed && typeof stats.completed === "object") return stats;
+  } catch {
+    // Ignore broken local stats.
+  }
+  return { completed: {} };
+}
+
+function saveStats(stats) {
+  localStorage.setItem(statsStorageKey, JSON.stringify(stats));
+}
+
+function recordCompletedGame() {
+  if (!puzzle || !gameOver) return;
+  const stats = loadStats();
+  if (stats.completed[puzzle.id]) return;
+  stats.completed[puzzle.id] = {
+    date: puzzle.date,
+    word: answer,
+    attempts: guesses.length,
+    won: guesses.includes(answer),
+    completedAt: new Date().toISOString(),
+  };
+  saveStats(stats);
+}
+
+function streakFromDates(dates) {
+  if (!dates.length) return 0;
+  const sorted = [...new Set(dates)].sort();
+  let best = 1;
+  let current = 1;
+  for (let index = 1; index < sorted.length; index += 1) {
+    if (previousDateKey(sorted[index]) === sorted[index - 1]) current += 1;
+    else current = 1;
+    best = Math.max(best, current);
+  }
+  return best;
+}
+
+function currentStreakFromDates(dates) {
+  const sorted = [...new Set(dates)].sort();
+  if (!sorted.length) return 0;
+  let streak = 1;
+  for (let index = sorted.length - 1; index > 0; index -= 1) {
+    if (previousDateKey(sorted[index]) !== sorted[index - 1]) break;
+    streak += 1;
+  }
+  return streak;
+}
+
+function renderStats() {
+  const stats = loadStats();
+  const entries = Object.values(stats.completed);
+  const wins = entries.filter((entry) => entry.won);
+  const savedCurrentPuzzle = puzzle ? stats.completed[puzzle.id] : null;
+  const liveAttempts = savedCurrentPuzzle ? 0 : guesses.length;
+  const completedAttempts = entries.reduce((sum, entry) => sum + Number(entry.attempts || 0), 0);
+  const totalAttempts = completedAttempts + liveAttempts;
+  const avgAttempts = entries.length ? (completedAttempts / entries.length).toFixed(1) : "--";
+  const wonDates = wins.map((entry) => entry.date);
+  const bestStreak = streakFromDates(wonDates);
+  const currentStreak = currentStreakFromDates(wonDates);
+
+  const statCards = [
+    ["yesterday", puzzle?.yesterdayWord || "-----"],
+    ["wordles guessed", wins.length],
+    ["total attempts", totalAttempts],
+    ["avg words/game", avgAttempts],
+    ["best streak", bestStreak],
+  ];
+
+  statsBar.replaceChildren(...statCards.map(([label, value]) => {
+    const card = document.createElement("div");
+    card.className = "stat-card";
+    card.innerHTML = `<strong>${value}</strong><span>${label}</span>`;
+    return card;
+  }));
+
+  streakBox.hidden = currentStreak < 2;
+  if (currentStreak >= 2) {
+    streakBox.innerHTML = `<span>current streak</span><strong>${currentStreak} days</strong>`;
+  }
 }
 
 function showToast(message) {
@@ -733,6 +804,7 @@ function makeKey(label, key, wide = false) {
 function render() {
   updateCountdownLabel();
   statusLabel.textContent = gameOver ? "completed" : `${guesses.length + 1} / ${maxGuesses}`;
+  renderStats();
   renderBoard();
   renderKeyboard();
 }
@@ -790,12 +862,6 @@ async function submitGuess() {
   }
 
   const guess = currentGuess;
-  if (!looksLikePossibleWord(guess)) {
-    showToast("Looks like gibberish");
-    shakeActiveRow();
-    return;
-  }
-
   currentGuess = "";
   guesses.push(guess);
   saveState();
@@ -806,6 +872,7 @@ async function submitGuess() {
   if (won || lost) {
     gameOver = true;
     saveState();
+    recordCompletedGame();
     render();
     setTimeout(showResultModal, 520);
     return;

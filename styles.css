@@ -129,6 +129,60 @@ h2 { font-size: clamp(42px, 8vw, 88px); }
   text-transform: uppercase;
 }
 
+.stats-bar {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stat-card,
+.streak-box {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.045);
+  padding: 12px;
+  text-align: center;
+}
+
+.stat-card strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--text);
+  font-size: clamp(19px, 3vw, 28px);
+  font-weight: 920;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.stat-card span,
+.streak-box span {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 860;
+  text-transform: uppercase;
+}
+
+.streak-box {
+  width: min(100%, 390px);
+  border-color: rgba(233, 255, 112, 0.46);
+  background:
+    radial-gradient(circle at 50% 0, rgba(233, 255, 112, 0.14), transparent 12rem),
+    rgba(233, 255, 112, 0.045);
+  box-shadow: 0 0 34px rgba(233, 255, 112, 0.08);
+}
+
+.streak-box strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--signal);
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 950;
+  line-height: 1;
+}
+
 .board {
   display: grid;
   grid-template-rows: repeat(6, 1fr);
@@ -365,5 +419,9 @@ h2 { font-size: clamp(42px, 8vw, 88px); }
 
   .result-grid {
     grid-template-columns: 1fr;
+  }
+
+  .stats-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

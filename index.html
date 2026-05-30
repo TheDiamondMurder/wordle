@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>wordle</title>
-    <link rel="stylesheet" href="styles.css?v=1" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
     <main class="game-page" aria-labelledby="page-title">
@@ -24,6 +24,9 @@
           <span id="status-label">daily puzzle</span>
         </div>
 
+        <div class="stats-bar" id="stats-bar" aria-label="Wordle stats"></div>
+        <div class="streak-box" id="streak-box" hidden></div>
+
         <div class="board" id="board" aria-label="Wordle board"></div>
 
         <div class="keyboard" id="keyboard" aria-label="Keyboard"></div>
@@ -42,6 +45,6 @@
       </section>
     </div>
 
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=8"></script>
   </body>
 </html>
