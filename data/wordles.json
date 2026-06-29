@@ -2,118 +2,6 @@
   "fallbackWord": "PENIS",
   "wordles": [
     {
-      "date": "2026-05-27",
-      "word": "CHEAP"
-    },
-    {
-      "date": "2026-05-28",
-      "word": "TEEPS"
-    },
-    {
-      "date": "2026-05-29",
-      "word": "XYLYL"
-    },
-    {
-      "date": "2026-05-30",
-      "word": "LIMBS"
-    },
-    {
-      "date": "2026-05-31",
-      "word": "MELON"
-    },
-    {
-      "date": "2026-06-01",
-      "word": "PAPER"
-    },
-    {
-      "date": "2026-06-02",
-      "word": "JAZZY"
-    },
-    {
-      "date": "2026-06-03",
-      "word": "NYMPH"
-    },
-    {
-      "date": "2026-06-04",
-      "word": "QUEUE"
-    },
-    {
-      "date": "2026-06-05",
-      "word": "EERIE"
-    },
-    {
-      "date": "2026-06-06",
-      "word": "VIVID"
-    },
-    {
-      "date": "2026-06-07",
-      "word": "BALLS"
-    },
-    {
-      "date": "2026-06-08",
-      "word": "COUNT"
-    },
-    {
-      "date": "2026-06-09",
-      "word": "XYLEM"
-    },
-    {
-      "date": "2026-06-10",
-      "word": "LIGMA"
-    },
-    {
-      "date": "2026-06-11",
-      "word": "KURWA"
-    },
-    {
-      "date": "2026-06-12",
-      "word": "FIGHT"
-    },
-    {
-      "date": "2026-06-13",
-      "word": "RAILS"
-    },
-    {
-      "date": "2026-06-14",
-      "word": "GEEKS"
-    },
-    {
-      "date": "2026-06-15",
-      "word": "MELON"
-    },
-    {
-      "date": "2026-06-16",
-      "word": "FOURS"
-    },
-    {
-      "date": "2026-06-17",
-      "word": "KOLIS"
-    },
-    {
-      "date": "2026-06-18",
-      "word": "NEVER"
-    },
-    {
-      "date": "2026-06-19",
-      "word": "TRAIN"
-    },
-    {
-      "date": "2026-06-20",
-      "word": "CAVES"
-    },
-    {
-      "date": "2026-06-21",
-      "word": "GIRLS"
-    },
-    {
-      "date": "2026-06-22",
-      "word": "REELS"
-    },
-    {
-      "date": "2026-06-23",
-      "word": "JONES"
-    },
-    {
       "date": "2026-06-24",
       "word": "NOTTS"
     },
@@ -140,6 +28,130 @@
     {
       "date": "2026-06-30",
       "word": "PARER"
-    }
+    },
+    {
+      "date": "2026-07-01",
+      "word": "POOPS"
+    },
+    {
+      "date": "2026-07-02",
+      "word": "PANEL"
+    },
+    {
+      "date": "2026-07-03",
+      "word": "TEXTS"
+    },
+    {
+      "date": "2026-07-04",
+      "word": "DIDDY"
+    },
+    {
+      "date": "2026-07-05",
+      "word": "MIHAI"
+    },
+    {
+      "date": "2026-07-06",
+      "word": "DRAKE"
+    },
+    {
+      "date": "2026-07-07",
+      "word": "CYCLE"
+    },
+    {
+      "date": "2026-07-08",
+      "word": "TRAIN"
+    },
+    {
+      "date": "2026-07-09",
+      "word": "STEAM"
+    },
+    {
+      "date": "2026-07-10",
+      "word": "FEDEX"
+    },
+    {
+      "date": "2026-07-11",
+      "word": "CRUSH"
+    },
+    {
+      "date": "2026-07-12",
+      "word": "FLUNK"
+    },
+    {
+      "date": "2026-07-13",
+      "word": "JUDAS"
+    },
+    {
+      "date": "2026-07-14",
+      "word": "ZHUZH"
+    },
+    {
+      "date": "2026-07-15",
+      "word": "YARAK"
+    },
+    {
+      "date": "2026-07-16",
+      "word": "APPLE"
+    },
+    {
+      "date": "2026-07-17",
+      "word": "ROBOT"
+    },
+    {
+      "date": "2026-07-18",
+      "word": "ALTON"
+    },
+    {
+      "date": "2026-07-19",
+      "word": "TOWER"
+    },
+    {
+      "date": "2026-07-20",
+      "word": "RIDES"
+    },
+    {
+      "date": "2026-07-21",
+      "word": "SCALE"
+    },
+    {
+      "date": "2026-07-22",
+      "word": "GATOR"
+    },
+    {
+      "date": "2026-07-23",
+      "word": "PONDS"
+    },
+    {
+      "date": "2026-07-24",
+      "word": "SWEAT"
+    },
+    {
+      "date": "2026-07-25",
+      "word": "ANIME"
+    },
+    {
+      "date": "2026-07-26",
+      "word": "QUOTE"
+    },
+    {
+      "date": "2026-07-27",
+      "word": "QUEEN"
+    },
+    {
+      "date": "2026-07-28",
+      "word": "FIGHT"
+    },
+    {
+      "date": "2026-07-29",
+      "word": "TRAIN"
+    },
+    {
+      "date": "2026-07-30",
+      "word": "RAILS"
+    },
+    {
+      "date": "2026-07-31",
+      "word": "WAGGA"
+    },
   ]
 }
